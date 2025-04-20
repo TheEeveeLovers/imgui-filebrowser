@@ -721,7 +721,7 @@ inline void ImGui::FileBrowser::Display()
                 }
             }
 
-            if(IsItemClicked(0) && IsMouseDoubleClicked(0))
+            if(IsMouseDoubleClicked(ImGuiMouseButton_Left) && IsItemHovered(ImGuiHoveredFlags_None))
             {
                 if(rsc.isDir)
                 {
