@@ -775,9 +775,16 @@ inline void ImGui::FileBrowser::Display()
         PushItemWidth(-1);
         if(InputText(
             "", inputNameBuffer_.data(), inputNameBuffer_.size(),
-            ImGuiInputTextFlags_CallbackResize, ExpandInputBuffer, &inputNameBuffer_) && inputNameBuffer_[0] != '\0')
+            ImGuiInputTextFlags_CallbackResize, ExpandInputBuffer, &inputNameBuffer_))
         {
-            selectedFilenames_ = { u8StrToPath(inputNameBuffer_.data()) };
+            if(inputNameBuffer_[0] != '\0')
+            {
+                selectedFilenames_ = { u8StrToPath(inputNameBuffer_.data()) };
+            }
+            else
+            {
+                selectedFilenames_.clear();
+            }
         }
         focusOnInputText |= IsItemFocused();
         PopItemWidth();
@@ -810,7 +817,10 @@ inline void ImGui::FileBrowser::Display()
         IsKeyPressed(ImGuiKey_Enter);
     if(!(flags_ & ImGuiFileBrowserFlags_SelectDirectory))
     {
-        if((Button(" ok ") || isEnterPressed) && !selectedFilenames_.empty())
+        BeginDisabled(selectedFilenames_.empty());
+        const bool ok = Button("ok");
+        EndDisabled();
+        if((ok || isEnterPressed) && !selectedFilenames_.empty())
         {
             isOk_ = true;
             CloseCurrentPopup();
